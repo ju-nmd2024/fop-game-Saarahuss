@@ -1,39 +1,43 @@
+
+
 //position variables
-const speed = 5 ;
-let characterX = 800;
-let characterY = 100;
-let characterS = 0.8;
+
+let characterX = 300;
+let characterY = 50;
+let characterS = 0.3;
+
 
 // game logic variables
 let velocityY = 0.2;
 let acceleration = 0.2;
+let gameTimer = 0;
 
 // game state variables
+let state = "start";
 let gameState = true;
 
+
 function setup() {
-  createCanvas(700, 650);
-  
+  createCanvas(600, 650);
 }
 
 function gameBackground(){
-
-  push();
-  clear();
- background(200,230,240);
+  background(255,255,255);
  //sea
+ push();
  noStroke();
  fill(150,200,240);
  rect(0,400, 700, 260);
- //platform
- fill(210,250,250);
- ellipse(330, 525, 150, 50);
+ pop();
  // iceberg in background
+ push();
  strokeWeight(4);
  stroke(135, 205,235);
+ fill(200, 230, 240);
  triangle(15, 400, 110, 110, 209, 398);
  pop();
 }
+
 
 function character(x,y,s) {
   
@@ -83,61 +87,98 @@ function character(x,y,s) {
     push();
   
 }
-character(characterX, characterY, characterS);
 
+function platform(){
+  strokeWeight(1);
+    fill(200,250,250);
+    ellipse(330, 525, 150, 50);
+  }
 
+function startScreen(){
+  background(255,255,255);
+  push();
+  fill(150,200,240);
+  rect(0,400, 700, 260);
+  fill(200,230,240);
+  triangle(33, 439, 180, 159, 282, 439);
+  triangle(63, 500, 301, 70, 529, 500);
+  pop();
+  push();
+  strokeWeight(5);
+  rect(150, 290, 300, 100);
+  pop();
+  text("Start Game", 170, 350);
+  textSize(50);
+}
+function gameScreen(){
+}
+
+function resultScreen(){
+  background(150, 200, 240);
+  fill(200,230,240);
+ 
+  fill(200, 230, 240);
+  rect(150, 290, 300, 100);
+
+  fill(0,0,0);
+  text("Result", 170, 350);
+}
 
 function draw() { 
 
-  gameBackground();
-  scale(0.4);
-  character(characterX, characterY, characterS);
-   
-  
+  if(state === "start"){
+    startScreen();
+  } else if(state === "game"){
+    gameScreen();
+    gameBackground();
+    platform();
+    character(characterX,characterY, characterS);
+
+    gameTimer = gameTimer + 1;
+    if(gameTimer >= 500){
+      gameTimer = 0;
+      state = "result";
+    }
+  } else if(state === "result"){
+    resultScreen();
+  }
   if(gameState === true){
     //gravity logic
     characterY = characterY + velocityY;
     velocityY = velocityY + acceleration;
 
-    // decrease velocity pressing middle button
+    // decrease velocity pressing middle button 
 
     if(keyIsDown(32)){
-      velocityY = velocityY - 0.5;
+      velocityY = velocityY - 0.9;
     }
   
     // left movement
     if(keyIsDown(37)){
-      characterX = characterX - speed;
+      characterX = characterX - 5;
     }
 
     // right movement
     if(keyIsDown (39)){
-      characterX = characterX + speed;
+      characterX = characterX + 5;
     }
     //position of landing
-    if(characterY > 900){
+    if(characterY > 370 && gameState === true){
+      if( velocityY > 2){
+        console.log("GAME OVER");
+      } else{
+        console.log("YOU WIN");
+      }
       gameState = false;
-      console.log("Game Over"); 
-      
     }
-    
-    
+    } 
   }
-} 
+function mouseClicked(){
+  if (state === "start"){
+    state = "game";
+  } else if( state === "result"){
+    state = "game";
+  }
 
-
-
-
- 
- 
-
-
-
-
-
-
-
-
-
-
+}
 
