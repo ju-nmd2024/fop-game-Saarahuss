@@ -6,6 +6,9 @@ let characterX = 300;
 let characterY = 50;
 let characterS = 0.3;
 
+let x = 300;
+let y = 100;
+
 
 // game logic variables
 let velocityY = 0.2;
@@ -91,7 +94,7 @@ function character(x,y,s) {
 function platform(){
   strokeWeight(1);
     fill(200,250,250);
-    ellipse(330, 525, 150, 50);
+    ellipse(x + 30, y + 425, 150, 50);
   }
 
 function startScreen(){
@@ -164,21 +167,29 @@ function draw() {
     }
     //position of landing
     if(characterY > 370 && gameState === true){
-      if( velocityY > 2){
-        console.log("GAME OVER");
-      } else{
+      if(characterX < 255 || characterX > 405){
+        // out of platform bounds
+        console.log("YOU LOSE - MISSED PLATFORM");
+      } else if(velocityY > 5) {
+        // LANDED TO HARD
+        console.log("YOU LOSE - LANDED TO HARD");
+      } else {
         console.log("YOU WIN");
       }
       gameState = false;
+      state = resultScreen;
     }
-    } 
+  } 
   }
 function mouseClicked(){
   if (state === "start"){
+    characterX = 310;
+    characterY = 50;
+    velocityY = 5;
     state = "game";
+    gameState = true;
   } else if( state === "result"){
     state = "game";
   }
 
 }
-
