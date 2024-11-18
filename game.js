@@ -6,6 +6,9 @@ let characterX = 300;
 let characterY = 50;
 let characterS = 0.3;
 
+let cloudX = 100;
+let cloudY = 100;
+
 let x = 300;
 let y = 100;
 
@@ -17,7 +20,7 @@ let gameTimer = 0;
 
 // game state variables
 let state = "start";
-let gameState = true;
+let gameState = false;
 
 
 function setup() {
@@ -25,23 +28,20 @@ function setup() {
 }
 
 function gameBackground(){
-  background(255,255,255);
- //sea
- push();
- noStroke();
- fill(150,200,240);
- rect(0,400, 700, 260);
- pop();
- // iceberg in background
- push();
- strokeWeight(4);
- stroke(135, 205,235);
- fill(200, 230, 240);
- triangle(15, 400, 110, 110, 209, 398);
- pop();
+  background(150,210,240);
+  push();
+  noStroke();
+  cloud(cloudX - 50, cloudY - 50);
+  cloud(cloudX + 90, cloudY + 50);
+  cloud(cloudX + 300, cloudY);
+  cloud(cloudX + 450, cloudY + 200);
+  sea();
+  pop();
+  mountain();
+  
+  
+
 }
-
-
 function character(x,y,s) {
   
     //bodyshape
@@ -56,7 +56,7 @@ function character(x,y,s) {
     ellipse(x+28 * s,y+130 * s,210 * s,150 * s);
     pop();
     //arms
-    strokeWeight(4);
+    strokeWeight(3);
     ellipse(x-85 * s,y+296 * s,60 * s,150 * s);
     ellipse(x+145 * s,y+296 * s,60 * s,150 * s);
     //feet
@@ -65,7 +65,7 @@ function character(x,y,s) {
     ellipse(x+80 * s,y+470 * s,60 * s,25 * s);
     //mouth
     ellipse(x+22 * s,y+140 * s,30 * s,20 * s);
-    strokeWeight(3);
+    strokeWeight(0.5);
     line(x+9 * s,y+140 * s,x+37 * s,y+140 * s);
     //cheeks
     push();
@@ -77,54 +77,107 @@ function character(x,y,s) {
     //eyes
     push();
     noFill();
-    strokeWeight(5);
+    strokeWeight(2);
     translate(x-20 * s,y+127 * s);
     rotate(3.14);
     arc(0 * s,0 * s,30 * s,20 * s,0 * s,PI);
     pop();
     noFill();
-    strokeWeight(5);
+    strokeWeight(2);
     translate(x+66 * s,y+127 * s);
     rotate(3.14);
     arc(0 * s,0 * s,30 * s,20 * s,0 * s,PI);
     push();
   
 }
-
 function platform(){
-  strokeWeight(1);
+  strokeWeight(4);
     fill(200,250,250);
     ellipse(x + 30, y + 425, 150, 50);
   }
+function mountain(){
+  strokeWeight(4);
+  fill(240,250,250);
+  triangle(x-280, y+298, x-120, y+59, x-18, y+298);
+  triangle(x-237, y+298, x+1, y-30, x+229, y+298);
+}
+function sea(){
+  fill(0,100,150);
+  rect(0,400, 700, 260);
+}
+function cloud(cloudX, cloudY){
+  push();
+  noStroke();
+  fill(255,255,255);
+  ellipse(cloudX, cloudY, 70, 40);
+  ellipse(cloudX, cloudY, 40, 70);
+  pop();
+}
 
 function startScreen(){
-  background(255,255,255);
-  push();
-  fill(150,200,240);
-  rect(0,400, 700, 260);
-  fill(200,230,240);
-  triangle(33, 439, 180, 159, 282, 439);
-  triangle(63, 500, 301, 70, 529, 500);
-  pop();
+  background(150,210,240);
+  cloud(cloudX - 50, cloudY - 50);
+  cloud(cloudX + 90, cloudY + 50);
+  cloud(cloudX + 300, cloudY);
+  cloud(cloudX + 450, cloudY + 200);
+  mountain();
+  sea();
   push();
   strokeWeight(5);
-  rect(150, 290, 300, 100);
+  fill(255,255,255);
+  rect(x-150, y+190, 300, 100);
+  textSize(40);
+  stroke(0,100,150);
+  fill(210, 240, 240);
+  text("Start Game", x-100, y+250);
   pop();
-  text("Start Game", 170, 350);
-  textSize(50);
 }
 function gameScreen(){
 }
 
-function resultScreen(){
+function victoryScreen(){
   background(150, 200, 240);
-  fill(200,230,240);
- 
-  fill(200, 230, 240);
-  rect(150, 290, 300, 100);
+  cloud(cloudX - 50, cloudY - 50);
+  cloud(cloudX + 90, cloudY + 50);
+  cloud(cloudX + 300, cloudY);
+  cloud(cloudX + 450, cloudY + 200);
+  sea();
+  mountain();
+  fill(255,255,255);
+  rect(x-150, y+190, 300, 100);
+  push();
+  strokeWeight(5);
+  textSize(40);
+  stroke(0, 100, 150);
+  fill(210, 240, 240);
+  text("VICTORY", x-100, y+250);
+  pop();
+}
 
-  fill(0,0,0);
-  text("Result", 170, 350);
+function gameOverscreen(){
+  background(150, 200, 240);
+  cloud(cloudX - 50, cloudY - 50);
+  cloud(cloudX + 90, cloudY + 50);
+  cloud(cloudX + 300, cloudY);
+  cloud(cloudX + 450, cloudY + 200);
+  sea();
+  mountain();
+  fill(255, 255, 255);
+  rect(x-150, y+190, 300, 100);
+  push();
+  strokeWeight(5);
+  textSize(40);
+  stroke(0, 100, 150);
+  fill(210, 240, 240);
+  text("Game Over", x-100, y+250);
+  pop();
+}
+
+function resetGame(){
+  characterY = 100;
+  velocityY = 0.2;
+  gameState = true;
+  gameTimer = 0;
 }
 
 function draw() { 
@@ -143,8 +196,11 @@ function draw() {
       state = "result";
     }
   } else if(state === "result"){
-    resultScreen();
+    victoryScreen();
+  } else if(state === "lose"){
+    gameOverscreen();
   }
+
   if(gameState === true){
     //gravity logic
     characterY = characterY + velocityY;
@@ -169,15 +225,16 @@ function draw() {
     if(characterY > 370 && gameState === true){
       if(characterX < 255 || characterX > 405){
         // out of platform bounds
-        console.log("YOU LOSE - MISSED PLATFORM");
+        state = "lose";
+        gameState = false;
       } else if(velocityY > 5) {
         // LANDED TO HARD
-        console.log("YOU LOSE - LANDED TO HARD");
+        state = "lose";
+        gameState = false;
       } else {
-        console.log("YOU WIN");
+        state = "result";
+        gameState = false;
       }
-      gameState = false;
-      state = resultScreen;
     }
   } 
   }
@@ -188,8 +245,8 @@ function mouseClicked(){
     velocityY = 5;
     state = "game";
     gameState = true;
-  } else if( state === "result"){
+  } else if(state === "result" || state === "lose"){
+    resetGame();
     state = "game";
   }
-
-}
+  }  
