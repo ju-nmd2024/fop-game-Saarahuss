@@ -1,28 +1,23 @@
-
-
-//position variables
-
+//character variables
 let characterX = 300;
 let characterY = 50;
 let characterS = 0.3;
 
+//cloud variables
 let cloudX = 100;
 let cloudY = 100;
 
+//position variables
 let x = 300;
 let y = 100;
-
 
 // game logic variables
 let velocityY = 0.2;
 let acceleration = 0.2;
-let gameTimer = 0;
 
 // game state variables
 let state = "start";
 let gameState = false;
-
-
 function setup() {
   createCanvas(600, 650);
 }
@@ -38,12 +33,8 @@ function gameBackground(){
   sea();
   pop();
   mountain();
-  
-  
-
 }
 function character(x,y,s) {
-  
     //bodyshape
     fill(30,40,53);
     strokeWeight(4);
@@ -88,7 +79,6 @@ function character(x,y,s) {
     rotate(3.14);
     arc(0 * s,0 * s,30 * s,20 * s,0 * s,PI);
     push();
-  
 }
 function platform(){
   strokeWeight(4);
@@ -148,9 +138,16 @@ function victoryScreen(){
   push();
   strokeWeight(5);
   textSize(40);
-  stroke(0, 100, 150);
-  fill(210, 240, 240);
+  stroke(0, 0, 0);
+  fill(0, 255, 0);
   text("VICTORY", x-100, y+250);
+  pop();
+  push();
+  strokeWeight(5);
+  textSize(30);
+  stroke(0, 0, 0);
+  fill(150, 200, 240);
+  text("Restart Game", x-90, y+450);
   pop();
 }
 
@@ -167,17 +164,25 @@ function gameOverscreen(){
   push();
   strokeWeight(5);
   textSize(40);
-  stroke(0, 100, 150);
-  fill(210, 240, 240);
+  stroke(0, 0, 0);
+  fill(255, 0, 0);
   text("Game Over", x-100, y+250);
+  pop();
+  push();
+  strokeWeight(5);
+  textSize(30);
+  stroke(0, 0, 0);
+  fill(150, 200, 240);
+  text("Restart Game", x-90, y+450);
   pop();
 }
 
 function resetGame(){
-  characterY = 100;
+  characterX = 310;
+  characterY = 10;
+  velocityY = 5;
   velocityY = 0.2;
   gameState = true;
-  gameTimer = 0;
 }
 
 function draw() { 
@@ -190,58 +195,52 @@ function draw() {
     platform();
     character(characterX,characterY, characterS);
 
-    gameTimer = gameTimer + 1;
-    if(gameTimer >= 500){
-      gameTimer = 0;
-      state = "result";
-    }
+    if(gameState === true){
+      //gravity logic
+      characterY = characterY + velocityY;
+      velocityY = velocityY + acceleration;
+      // decrease velocity pressing middle button 
+      if(keyIsDown(32)){
+        velocityY = velocityY - 0.9;
+      }
+      // left movement
+      if(keyIsDown(37)){
+        characterX = characterX - 5;
+      }
+      // right movement
+      if(keyIsDown (39)){
+        characterX = characterX + 5;
+      }
+      //position of landing
+      if(characterY > 370 && gameState === true){
+        // the platform area
+        if(characterX < 255 || characterX > 405){
+          // out of platform bounds
+          state = "lose";
+          gameState = false;
+        } else if(velocityY > 5) {
+          // LANDED TO HARD
+          state = "lose";
+          gameState = false;
+        } else {
+          //landed on platform
+          state = "result";
+          gameState = false;
+        }
+      }
+    } 
+
   } else if(state === "result"){
     victoryScreen();
   } else if(state === "lose"){
     gameOverscreen();
   }
-
-  if(gameState === true){
-    //gravity logic
-    characterY = characterY + velocityY;
-    velocityY = velocityY + acceleration;
-
-    // decrease velocity pressing middle button 
-
-    if(keyIsDown(32)){
-      velocityY = velocityY - 0.9;
-    }
-  
-    // left movement
-    if(keyIsDown(37)){
-      characterX = characterX - 5;
-    }
-
-    // right movement
-    if(keyIsDown (39)){
-      characterX = characterX + 5;
-    }
-    //position of landing
-    if(characterY > 370 && gameState === true){
-      if(characterX < 255 || characterX > 405){
-        // out of platform bounds
-        state = "lose";
-        gameState = false;
-      } else if(velocityY > 5) {
-        // LANDED TO HARD
-        state = "lose";
-        gameState = false;
-      } else {
-        state = "result";
-        gameState = false;
-      }
-    }
-  } 
   }
-function mouseClicked(){
+
+  function mouseClicked(){
   if (state === "start"){
     characterX = 310;
-    characterY = 50;
+    characterY = 10;
     velocityY = 5;
     state = "game";
     gameState = true;
@@ -249,4 +248,5 @@ function mouseClicked(){
     resetGame();
     state = "game";
   }
-  }  
+  }
+  
